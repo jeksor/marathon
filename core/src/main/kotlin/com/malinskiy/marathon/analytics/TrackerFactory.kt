@@ -10,12 +10,9 @@ import com.malinskiy.marathon.analytics.internal.sub.TrackerInternal
 import com.malinskiy.marathon.cache.test.CacheTestResultsTracker
 import com.malinskiy.marathon.execution.AnalyticsConfiguration.InfluxDbConfiguration
 import com.malinskiy.marathon.execution.Configuration
-import com.malinskiy.marathon.io.AttachmentManager
 import com.malinskiy.marathon.io.FileManager
-import com.malinskiy.marathon.io.FileType
 import com.malinskiy.marathon.log.MarathonLogging
 import com.malinskiy.marathon.report.allure.AllureReporter
-import com.malinskiy.marathon.report.attachment.AttachmentsReporter
 import com.malinskiy.marathon.report.device.DeviceInfoJsonReporter
 import com.malinskiy.marathon.report.html.HtmlSummaryReporter
 import com.malinskiy.marathon.report.junit.FinalJUnitReporter

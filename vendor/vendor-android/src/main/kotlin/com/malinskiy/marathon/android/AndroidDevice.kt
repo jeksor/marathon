@@ -44,9 +44,9 @@ class AndroidDevice(
     val ddmsDevice: IDevice,
     private val track: Track,
     private val timer: Timer,
-    private val serialStrategy: SerialStrategy,
+    private val serialStrategy: SerialStrategy = SerialStrategy.AUTOMATIC,
     private val androidAppInstaller: AndroidAppInstaller,
-    private val attachmentManager: AttachmentManager
+    private val attachmentManager: AttachmentManager,
 ) : Device, CoroutineScope {
 
     val fileManager = RemoteFileManager(ddmsDevice)
@@ -186,7 +186,7 @@ class AndroidDevice(
             prepareRecorderListener(feature, fileManager, devicePoolId, attachmentProviders)
         } ?: NoOpTestRunListener()
 
-        val logCatListener = LogCatListener(this, LogWriter(attachmentManager))
+        val logCatListener = LogCatListener(this, devicePoolId, LogWriter(fileManager))
             .also { attachmentProviders.add(it) }
 
         return CompositeTestRunListener(
@@ -228,7 +228,7 @@ class AndroidDevice(
     ): TestRunListener =
         when (feature) {
             DeviceFeature.VIDEO -> {
-                ScreenRecorderTestRunListener(attachmentManager, this)
+                ScreenRecorderTestRunListener(attachmentManager, devicePoolId, this)
                     .also { attachmentProviders.add(it) }
             }
 

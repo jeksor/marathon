@@ -105,7 +105,7 @@ class MarathonPlugin : Plugin<Project> {
                     exec = {
                         dependsOn(variant.testedVariant.assembleProvider, variant.assembleProvider)
                     },
-                    fallback = {
+                    fallbacks = listOf {
                         @Suppress("DEPRECATION")
                         dependsOn(variant.testedVariant.assemble, variant.assemble)
                     }

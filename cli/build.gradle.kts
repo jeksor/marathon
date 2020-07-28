@@ -79,4 +79,4 @@ idea {
     }
 }
 
-Testing.configure(this)
+Testing.configure(project)

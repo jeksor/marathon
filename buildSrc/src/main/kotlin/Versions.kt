@@ -14,7 +14,7 @@ object Versions {
     val bugsnag = "3.6.1"
 
     val junitGradle = "1.0.0"
-    val androidGradleVersion = "3.6.1"
+    val androidGradleVersion = "4.0.0"
 
     val spek = "1.1.5"
     val junit5 = "5.6.0"

@@ -6,6 +6,7 @@ import com.malinskiy.marathon.execution.AnalyticsConfiguration
 import com.malinskiy.marathon.execution.CacheConfiguration
 import com.malinskiy.marathon.execution.Configuration
 import com.malinskiy.marathon.execution.FilteringConfiguration
+import com.malinskiy.marathon.execution.MarathonListener
 import com.malinskiy.marathon.execution.StrictRunFilterConfiguration
 import com.malinskiy.marathon.execution.strategy.BatchingStrategy
 import com.malinskiy.marathon.execution.strategy.FlakinessStrategy
@@ -22,6 +23,8 @@ import com.malinskiy.marathon.test.TestVendorConfiguration
 import kotlinx.coroutines.channels.Channel
 import java.nio.file.Files
 
+fun configuration(block: ConfigurationFactory.() -> Unit = {}) = ConfigurationFactory().apply(block).build()
+
 class ConfigurationFactory {
     var name = "DEFAULT_TEST_CONFIG"
     var outputDir = Files.createTempDirectory("test-run").toFile()
@@ -36,12 +39,14 @@ class ConfigurationFactory {
     var customAnalyticsTracker: Tracker? = null
     var analyticsConfiguration: AnalyticsConfiguration? = null
     var excludeSerialRegexes: List<Regex>? = null
+    var ignoreCrashRegexes: List<Regex>? = null
     var fallbackToScreenshots: Boolean? = null
     var strictMode: Boolean? = null
     var uncompletedTestRetryQuota: Int? = null
     var filteringConfiguration: FilteringConfiguration? = null
     var pullScreenshotFilterConfiguration: FilteringConfiguration? = null
     var strictRunFilterConfiguration: StrictRunFilterConfiguration? = null
+    var listener: MarathonListener? = null
     var flakinessStrategy: FlakinessStrategy? = null
     var cache: CacheConfiguration? = null
     var ignoreFailures: Boolean? = null
@@ -86,10 +91,12 @@ class ConfigurationFactory {
             isCodeCoverageEnabled = isCodeCoverageEnabled,
             fallbackToScreenshots = fallbackToScreenshots,
             strictMode = strictMode,
+            listener = listener,
             uncompletedTestRetryQuota = uncompletedTestRetryQuota,
             testClassRegexes = testClassRegexes,
             includeSerialRegexes = includeSerialRegexes,
             excludeSerialRegexes = excludeSerialRegexes,
+            ignoreCrashRegexes = ignoreCrashRegexes,
             testBatchTimeoutMillis = testBatchTimeoutMillis,
             testOutputTimeoutMillis = testOutputTimeoutMillis,
             debug = debug,

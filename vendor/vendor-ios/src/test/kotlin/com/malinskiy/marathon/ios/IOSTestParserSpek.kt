@@ -44,8 +44,10 @@ object IOSTestParserSpek : Spek(
                     testClassRegexes = null,
                     includeSerialRegexes = null,
                     excludeSerialRegexes = null,
+                    ignoreCrashRegexes = null,
                     testBatchTimeoutMillis = null,
                     testOutputTimeoutMillis = null,
+                    listener = null,
                     debug = null,
                     vendorConfiguration = IOSConfiguration(
                         derivedDataDir = derivedDataDir,

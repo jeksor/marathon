@@ -7,7 +7,6 @@ import com.malinskiy.marathon.execution.AttachmentType
 import com.malinskiy.marathon.execution.TestResult
 import com.malinskiy.marathon.io.FileType
 import com.malinskiy.marathon.report.logs.LogEvent.Crash
-import com.malinskiy.marathon.test.Test
 
 class LogReportTestEventInflator(private val logReport: LogReport) : TestEventInflator {
 
@@ -46,7 +45,4 @@ class LogReportTestEventInflator(private val logReport: LogReport) : TestEventIn
         val batchLogs = logReport.batches[batchId] ?: return null
         return batchLogs.tests.getOrDefault(logTest, batchLogs.log)
     }
-
-    private fun Test.toLogTest(): LogTest =
-        LogTest(pkg, clazz, method)
 }

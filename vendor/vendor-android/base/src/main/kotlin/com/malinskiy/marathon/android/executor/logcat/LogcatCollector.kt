@@ -4,13 +4,20 @@ import com.malinskiy.marathon.android.executor.logcat.BatchLogSaver.SaveEntry
 import com.malinskiy.marathon.android.executor.logcat.model.LogcatEvent
 import com.malinskiy.marathon.android.executor.logcat.parse.LogcatEventsListener
 import com.malinskiy.marathon.device.Device
-import com.malinskiy.marathon.report.logs.LogTest
 import com.malinskiy.marathon.log.MarathonLogging
+import com.malinskiy.marathon.report.logs.BatchLogs
 import com.malinskiy.marathon.report.logs.LogEvent
 import com.malinskiy.marathon.report.logs.LogReport
-import com.malinskiy.marathon.report.logs.LogReportProvider
+import com.malinskiy.marathon.report.logs.LogTest
+import com.malinskiy.marathon.report.logs.LogsProvider
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 
-class LogcatCollector : LogcatEventsListener, LogReportProvider {
+class LogcatCollector : LogcatEventsListener, LogsProvider {
 
     private val logger = MarathonLogging.logger(LogcatCollector::class.java.simpleName)
 
@@ -44,6 +51,10 @@ class LogcatCollector : LogcatEventsListener, LogReportProvider {
             is LogcatEvent.BatchStarted -> {
                 devices.compute(event.device) { _, oldState ->
                     val state = oldState ?: DeviceState()
+                    if (state.currentBatchId != null && state.currentBatchId != event.batchId) {
+                        // previous unfinished batch, let's close it
+                        batchCollectors[state.currentBatchId]?.onBatchFinished()
+                    }
                     state.copy(currentBatchId = event.batchId, currentTest = null)
                 }
             }
@@ -53,7 +64,7 @@ class LogcatCollector : LogcatEventsListener, LogReportProvider {
                     logger.error { "Incorrect state: batch ${event.batchId} finished but not started (state = ${oldState})" }
                     return
                 }
-                batchCollectors[event.batchId]?.close()
+                batchCollectors[event.batchId]?.onBatchFinished()
                 devices[event.device] = oldState.copy(currentBatchId = null, currentTest = null)
             }
             is LogcatEvent.TestStarted -> {
@@ -77,20 +88,40 @@ class LogcatCollector : LogcatEventsListener, LogReportProvider {
                     return
                 }
 
-                batchCollectors[oldState.currentBatchId]?.close(event.test)
+                batchCollectors[oldState.currentBatchId]?.onTestFinished(event.test)
                 devices[event.device] = oldState.copy(currentTest = null)
             }
             is LogcatEvent.DeviceDisconnected -> {
                 val currentBatchId = devices[event.device]?.currentBatchId
-                batchCollectors[currentBatchId]?.close()
+                batchCollectors[currentBatchId]?.onBatchFinished()
                 devices[event.device] = DeviceState()
             }
         }
     }
 
     @Synchronized
-    override fun getLogReport(): LogReport =
-        LogReport(batchCollectors.mapValues { it.value.createBatchLogs() })
+    override fun getFullReport(): LogReport =
+        runBlocking {
+            LogReport(batchCollectors.mapValues { it.value.getBatchLogs(forceCreate = true) })
+        }
+
+    override suspend fun getBatchReport(batchId: String): BatchLogs? {
+        val deferred: Deferred<BatchLogs?> = GlobalScope.async {
+            batchCollectors[batchId]?.getBatchLogs(forceCreate = false)
+        }
+
+        try {
+            withTimeout(GET_BATCH_REPORT_TIMEOUT_MILLIS) { deferred.await() }
+        } catch (ignored: TimeoutCancellationException) {
+            logger.warn { "Timeout reached while waiting for batch $batchId logcat" }
+        }
+
+        return if (deferred.isCompleted) {
+            deferred.getCompleted()
+        } else {
+            null
+        }
+    }
 
     private data class DeviceState(
         val currentBatchId: String? = null,
@@ -101,4 +132,9 @@ class LogcatCollector : LogcatEventsListener, LogReportProvider {
         val test: LogTest,
         val processId: Int
     )
+
+    private companion object {
+        private const val GET_BATCH_REPORT_TIMEOUT_MILLIS = 20 * 1000L
+    }
 }
+

@@ -29,4 +29,4 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.apiVersion = "1.3"
 }
 
-Testing.configure(project)
+Testing.configure(this)

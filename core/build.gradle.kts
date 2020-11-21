@@ -85,7 +85,7 @@ val integrationTest = task<Test>("integrationTest") {
 }
 
 Deployment.initialize(project)
-Testing.configure(project)
+Testing.configure(this)
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"

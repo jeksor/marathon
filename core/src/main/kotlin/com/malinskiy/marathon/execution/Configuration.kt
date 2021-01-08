@@ -86,7 +86,7 @@ data class Configuration constructor(
         testClassRegexes: Collection<Regex>?,
         includeSerialRegexes: Collection<Regex>?,
         excludeSerialRegexes: Collection<Regex>?,
-        ignoreCrashRegexes: Collection<Regex>?,
+        ignoreFailureRegexes: Collection<Regex>?,
 
         testBatchTimeoutMillis: Long?,
         testOutputTimeoutMillis: Long?,
@@ -121,7 +121,7 @@ data class Configuration constructor(
             testClassRegexes = testClassRegexes ?: listOf(Regex("^((?!Abstract).)*Test$")),
             includeSerialRegexes = includeSerialRegexes ?: emptyList(),
             excludeSerialRegexes = excludeSerialRegexes ?: emptyList(),
-            ignoreFailureRegexes = ignoreCrashRegexes ?: emptyList(),
+            ignoreFailureRegexes = ignoreFailureRegexes ?: emptyList(),
             testBatchTimeoutMillis = testBatchTimeoutMillis ?: DEFAULT_EXECUTION_TIMEOUT_MILLIS,
             testOutputTimeoutMillis = testOutputTimeoutMillis ?: DEFAULT_OUTPUT_TIMEOUT_MILLIS,
             noDevicesTimeoutMillis = noDevicesTimeoutMillis ?: DEFAULT_NO_DEVICES_TIMEOUT_MILLIS,

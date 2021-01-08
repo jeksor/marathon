@@ -44,7 +44,7 @@ object IOSTestParserSpek : Spek(
                     testClassRegexes = null,
                     includeSerialRegexes = null,
                     excludeSerialRegexes = null,
-                    ignoreCrashRegexes = null,
+                    ignoreFailureRegexes = null,
                     testBatchTimeoutMillis = null,
                     testOutputTimeoutMillis = null,
                     noDevicesTimeoutMillis = null,

@@ -266,7 +266,7 @@ class QueueActor(
             } else {
                 logger.debug { "queue is empty and stop is not requested yet, no batches available for ${device.serialNumber}" }
             }
-        } else {
+        } else if (queueIsEmpty) {
             logger.debug {
                 "queue is empty but there are active batches present for " +
                     activeBatches.keys.joinToString { it }

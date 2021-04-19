@@ -126,4 +126,7 @@ class AndroidDeviceTestRunner(private val device: DdmlibAndroidDevice) {
     }
 }
 
-internal fun Test.toTestIdentifier(): TestIdentifier = TestIdentifier("$pkg.$clazz", method)
+internal fun Test.toTestIdentifier(): TestIdentifier {
+    val ignoreReason = metaProperties.find { it.name == JUNIT_IGNORE_META_PROPERY }?.values.toString() ?: ""
+    return TestIdentifier("$pkg.$clazz", method + ignoreReason)
+}

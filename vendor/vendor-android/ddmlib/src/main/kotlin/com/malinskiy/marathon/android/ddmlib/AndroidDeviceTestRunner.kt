@@ -15,6 +15,7 @@ import com.malinskiy.marathon.execution.Configuration
 import com.malinskiy.marathon.log.MarathonLogging
 import com.malinskiy.marathon.test.Test
 import com.malinskiy.marathon.test.TestBatch
+import com.malinskiy.marathon.test.toSimpleSafeTestName
 import com.malinskiy.marathon.test.toTestName
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -83,6 +84,7 @@ class AndroidDeviceTestRunner(private val device: DdmlibAndroidDevice) {
             listeners.testStarted(identifier)
             listeners.testIgnored(identifier)
             listeners.testEnded(identifier, hashMapOf())
+            println("##teamcity[testMetadata name='reason' value='123']")
         }
     }
 
@@ -126,7 +128,4 @@ class AndroidDeviceTestRunner(private val device: DdmlibAndroidDevice) {
     }
 }
 
-internal fun Test.toTestIdentifier(): TestIdentifier {
-    val ignoreReason = metaProperties.find { it.name == JUNIT_IGNORE_META_PROPERY }?.values.toString() ?: ""
-    return TestIdentifier("$pkg.$clazz", method + ignoreReason)
-}
+internal fun Test.toTestIdentifier(): TestIdentifier = TestIdentifier("$pkg.$clazz", method)

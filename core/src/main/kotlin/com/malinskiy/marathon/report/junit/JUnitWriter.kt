@@ -64,7 +64,9 @@ class JUnitWriter(
                     }
                     when (testResult.status) {
                         TestStatus.IGNORED, TestStatus.ASSUMPTION_FAILURE -> {
-                            element("skipped") { "https://jira.badoojira.com/browse/AND-31245" }
+                            element("skipped") {
+                                writeCData("https://jira.badoojira.com/browse/AND-31245")
+                            }
                         }
                         TestStatus.INCOMPLETE, TestStatus.FAILURE -> {
                             element("failure") {

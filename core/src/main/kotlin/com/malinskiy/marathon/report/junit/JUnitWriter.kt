@@ -64,11 +64,7 @@ class JUnitWriter(
                     }
                     when (testResult.status) {
                         TestStatus.IGNORED, TestStatus.ASSUMPTION_FAILURE -> {
-                            element("skipped") {
-                                testResult.stacktrace?.let {
-                                    writeCData(it)
-                                }
-                            }
+                            element("skipped") { "https://jira.badoojira.com/browse/AND-31245" }
                         }
                         TestStatus.INCOMPLETE, TestStatus.FAILURE -> {
                             element("failure") {

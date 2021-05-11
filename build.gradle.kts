@@ -2,7 +2,6 @@ import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
         google()
     }
@@ -35,7 +34,6 @@ allprojects {
     group = "com.malinskiy.marathon"
 
     repositories {
-        jcenter()
         mavenCentral()
         google()
         maven { url = uri("https://jitpack.io") }

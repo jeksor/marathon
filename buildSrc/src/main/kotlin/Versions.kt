@@ -18,7 +18,7 @@ object Versions {
 
     val spek = "1.1.5"
     val junit5 = "5.6.0"
-    val kluent = "1.40"
+    val kluent = "1.64"
 
     val kakao = "1.4.0"
     val espresso = "3.0.1"
@@ -68,7 +68,7 @@ object Libraries {
     val kotlinStdLibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common:${Versions.kotlin}"
     val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}"
     val kotlinLogging = "io.github.microutils:kotlin-logging:${Versions.kotlinLogging}"
-    val slf4jAPI = "ch.frankel.log4k:slf4k-api:${Versions.slf4jAPI}"
+    val slf4jAPI = "com.github.nfrankel:slf4k:${Versions.slf4jAPI}"
     val logbackClassic = "ch.qos.logback:logback-classic:${Versions.logbackClassic}"
     val kotlinCoroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
     val ktorClient = "io.ktor:ktor-client-core:${Versions.ktor}"
@@ -94,7 +94,7 @@ object Libraries {
     val scalr = "org.imgscalr:imgscalr-lib:${Versions.scalr}"
     val allure = "io.qameta.allure:allure-java-commons:${Versions.allure}"
     val allureEnvironment = "com.github.automatedowl:allure-environment-writer:${Versions.allureEnvironment}"
-    val koin = "org.koin:koin-core:${Versions.koin}"
+    val koin = "io.insert-koin:koin-core:${Versions.koin}"
     val bugsnag = "com.bugsnag:bugsnag:${Versions.bugsnag}"
 }
 
@@ -115,7 +115,7 @@ object TestLibraries {
     val junit = "junit:junit:${Versions.junit}"
     val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mockitoKotlin}"
     val jupiterEngine = "org.junit.jupiter:junit-jupiter-engine:${Versions.jupiterEngine}"
-    val koin = "org.koin:koin-test:${Versions.koin}"
+    val koin = "io.insert-koin:koin-test:${Versions.koin}"
     val jsonAssert = "org.skyscreamer:jsonassert:${Versions.jsonAssert}"
     val assertk = "com.willowtreeapps.assertk:assertk:${Versions.assertk}"
 

@@ -1,15 +1,11 @@
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.junit.platform.gradle.plugin.EnginesExtension
-import org.junit.platform.gradle.plugin.FiltersExtension
-import org.junit.platform.gradle.plugin.JUnitPlatformExtension
 
 plugins {
     idea
     `java-library`
     id("org.jetbrains.kotlin.jvm")
     id("org.jetbrains.dokka")
-    id("org.junit.platform.gradle.plugin")
     jacoco
     id("de.fuerstenau.buildconfig") version "1.1.8"
 }
@@ -85,7 +81,7 @@ val integrationTest = task<Test>("integrationTest") {
 }
 
 Deployment.initialize(project)
-Testing.configure(this)
+Testing.configure(project)
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"

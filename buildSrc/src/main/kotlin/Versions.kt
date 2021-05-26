@@ -13,7 +13,6 @@ object Versions {
     val axmlParser = "1.0"
     val bugsnag = "3.6.1"
 
-    val junitGradle = "1.0.0"
     val androidGradleVersion = "3.6.1"
 
     val spek = "1.1.5"
@@ -39,7 +38,7 @@ object Versions {
     val guava = "26.0-jre"
     val rsync4j = "3.1.2-12"
     val sshj = "0.26.0"
-    val testContainers = "1.9.1"
+    val testContainers = "1.15.3"
     val jupiterEngine = "5.1.0"
     val jansi = "1.17.1"
     val scalr = "4.2"
@@ -55,7 +54,6 @@ object Versions {
 
 object BuildPlugins {
     val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
-    val junitGradle = "org.junit.platform:junit-platform-gradle-plugin:${Versions.junitGradle}"
     val androidGradle = "com.android.tools.build:gradle:${Versions.androidGradleVersion}"
     val dokka = "org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka}"
 }

@@ -4,10 +4,10 @@ plugins {
     `java-library`
     id("org.jetbrains.kotlin.jvm")
     id("org.jetbrains.dokka")
-    id("org.junit.platform.gradle.plugin")
 }
 
 Deployment.initialize(project)
+Testing.configure(project)
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
@@ -17,8 +17,4 @@ tasks.withType<KotlinCompile> {
 dependencies {
     implementation(Analytics.googleAnalyticsWrapper)
     implementation(Libraries.kotlinStdLib)
-    testCompile(TestLibraries.kluent)
-    testCompile(TestLibraries.mockitoKotlin)
-    testCompile(TestLibraries.spekAPI)
-    testRuntime(TestLibraries.spekJUnitPlatformEngine)
 }

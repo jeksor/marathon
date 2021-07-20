@@ -6,8 +6,8 @@ import com.malinskiy.marathon.execution.TestResult
 import com.malinskiy.marathon.execution.TestStatus
 import com.malinskiy.marathon.io.FileManager
 import com.malinskiy.marathon.io.FileType
-import com.malinskiy.marathon.report.summary.TestSummaryFormatter
 import com.malinskiy.marathon.report.summary.TestSummary
+import com.malinskiy.marathon.report.summary.TestSummaryFormatter
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,7 +22,26 @@ class JUnitWriter(
 
     fun testFinished(devicePoolId: DevicePoolId, device: DeviceInfo, testResult: TestResult, testSummary: TestSummary?) {
         val file = fileManager.createFile(fileType, devicePoolId, device, testResult.test)
-        file.createNewFile()
+
+        try {
+            file.createNewFile()
+        } catch (error: Throwable) {
+            error.printStackTrace()
+            System.err.println("Error while creating new file ${file.absolutePath}")
+            val newTestMethodName = testResult.test.method.dropLast(TEST_METHOD_DROP_CHAR_COUNT)
+            testFinished(
+                devicePoolId = devicePoolId,
+                device = device,
+                testResult = testResult.copy(
+                    status = TestStatus.FAILURE,
+                    test = testResult.test.copy(method = newTestMethodName),
+                ),
+                testSummary = testSummary?.copy(
+                    test = testSummary.test.copy(method = newTestMethodName)
+                )
+            )
+            return
+        }
 
         val writer = XMLOutputFactory.newFactory().createXMLStreamWriter(FileOutputStream(file), "UTF-8")
 
@@ -81,5 +100,9 @@ class JUnitWriter(
                 }
             }
         }
+    }
+
+    private companion object {
+        private const val TEST_METHOD_DROP_CHAR_COUNT = 20
     }
 }

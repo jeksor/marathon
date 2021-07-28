@@ -59,9 +59,9 @@ internal class TrackerFactory(
         val delegatingTrackerInternal = DelegatingTrackerInternal(defaultTrackers)
         val mappingTracker = MappingTracker(delegatingTrackerInternal)
 
-        track + mappingTracker
-        track + cacheTestResultsTracker
-        configuration.customAnalyticsTracker?.let { track + it }
+        track.add(mappingTracker)
+        track.add(cacheTestResultsTracker)
+        configuration.customAnalyticsTracker?.let { track.add(it) }
 
         return delegatingTrackerInternal
     }

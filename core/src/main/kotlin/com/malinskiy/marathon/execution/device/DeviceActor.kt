@@ -186,7 +186,6 @@ class DeviceActor(
                         }
                     }
                 }
-                state.transition(DeviceEvent.Complete)
             } catch (e: Exception) {
                 logger.error(e) { "Error ${e.message}" }
                 state.transition(DeviceEvent.Terminate)
@@ -200,7 +199,6 @@ class DeviceActor(
             val start = Instant.now()
             try {
                 device.execute(configuration, devicePoolId, batch, result, progressReporter)
-                state.transition(DeviceEvent.Complete)
             } catch (e: CancellationException) {
                 logger.warn(e) { "Device execution has been cancelled" }
                 state.transition(DeviceEvent.Terminate)
@@ -209,23 +207,10 @@ class DeviceActor(
                 state.transition(DeviceEvent.Terminate)
             } catch (e: TestBatchExecutionException) {
                 logger.warn(e) { "Test batch failed execution" }
-                pool.send(
-                    DevicePoolMessage.FromDevice.ReturnTestBatch(
-                        device,
-                        batch,
-                        "Test batch failed execution:\n${e.stackTraceToString()}"
-                    )
-                )
-                state.transition(DeviceEvent.Complete)
+                returnBatchAnd(batch, "Test batch failed execution: \n${e.stackTraceToString()}")
             } catch (e: Throwable) {
                 logger.error(e) { "Unknown vendor exception caught. Considering this a recoverable error" }
-                pool.send(
-                    DevicePoolMessage.FromDevice.ReturnTestBatch(
-                        device, batch, "Unknown vendor exception caught. \n" +
-                            "${e.stackTraceToString()}"
-                    )
-                )
-                state.transition(DeviceEvent.Complete)
+                returnBatchAnd(batch, "Unknown vendor exception caught. \n${e.stackTraceToString()}")
             } finally {
                 val finish = Instant.now()
                 tracker.executingBatch(device.serialNumber, start, finish)

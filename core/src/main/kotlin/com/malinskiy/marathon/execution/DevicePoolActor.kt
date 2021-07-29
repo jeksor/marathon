@@ -47,6 +47,7 @@ class DevicePoolActor(
             is DevicePoolMessage.FromScheduler.AddDevice -> addDevice(msg.device)
             is DevicePoolMessage.FromScheduler.AddTests -> addTests(msg.shard)
             is DevicePoolMessage.FromScheduler.RemoveDevice -> removeDevice(msg.device)
+            is DevicePoolMessage.FromScheduler.RequestStop -> requestStop()
             is DevicePoolMessage.FromScheduler.Terminate -> terminate()
             is DevicePoolMessage.FromDevice.IsReady -> deviceReady(msg)
             is DevicePoolMessage.FromDevice.CompletedTestBatch -> deviceCompleted(msg.device, msg.results)

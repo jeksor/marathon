@@ -157,7 +157,17 @@ class DeviceActor(
         }
     }
 
-    private var job: Job? = null
+    private var job by Delegates.observable<Job?>(null) { _, _, newValue ->
+        newValue?.invokeOnCompletion {
+            if (it == null) {
+                state.transition(DeviceEvent.Complete)
+            } else {
+                logger.error(it) { "Error ${it.message}" }
+                state.transition(DeviceEvent.Terminate)
+                terminate()
+            }
+        }
+    }
 
     private fun initialize() {
         logger.debug { "initialize ${device.serialNumber}" }

@@ -187,6 +187,7 @@ class DeviceActor(
     private fun executeBatch(batch: TestBatch, result: CompletableDeferred<TestBatchResults>) {
         logger.debug { "executeBatch ${device.serialNumber}" }
         job = async {
+            val start = Instant.now()
             try {
                 device.execute(configuration, devicePoolId, batch, result, progressReporter)
                 state.transition(DeviceEvent.Complete)
@@ -215,6 +216,9 @@ class DeviceActor(
                     )
                 )
                 state.transition(DeviceEvent.Complete)
+            } finally {
+                val finish = Instant.now()
+                tracker.executingBatch(device.serialNumber, start, finish)
             }
         }
     }

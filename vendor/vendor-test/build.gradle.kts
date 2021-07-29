@@ -8,6 +8,7 @@ dependencies {
     implementation(Libraries.kotlinCoroutines)
     implementation(Libraries.kotlinLogging)
     implementation(Libraries.kotlinReflect)
+    implementation(Libraries.gson)
     implementation(TestLibraries.jsonAssert)
     implementation(TestLibraries.spekAPI)
     implementation(TestLibraries.kluent)

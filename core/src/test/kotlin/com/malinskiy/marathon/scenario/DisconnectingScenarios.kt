@@ -7,6 +7,9 @@ import com.malinskiy.marathon.test.Test
 import com.malinskiy.marathon.test.TestComponentInfo
 import com.malinskiy.marathon.test.assert.shouldBeEqualToAsJson
 import com.malinskiy.marathon.test.setupMarathon
+import com.malinskiy.marathon.time.Timer
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -32,6 +35,7 @@ class DisconnectingScenarios : Spek(
                 it("should pass") {
                     var output: File? = null
                     val coroutineScope = TestCoroutineScope()
+                    val timerStub: Timer = mock()
 
                     val marathon = setupMarathon {
                         val test1 = Test("test", "SimpleTest", "test1", emptySet(), TestComponentInfo())
@@ -41,6 +45,7 @@ class DisconnectingScenarios : Spek(
 
                         configuration {
                             output = outputDir
+                            timer = timerStub
 
                             tests {
                                 listOf(test1, test2)
@@ -67,6 +72,9 @@ class DisconnectingScenarios : Spek(
                             test2 to arrayOf(TestStatus.PASSED)
                         )
                     }
+
+                    var i = 0L
+                    whenever(timerStub.currentTimeMillis()).then { i++ }
 
                     val job = coroutineScope.launch {
                         marathon.runAsync()

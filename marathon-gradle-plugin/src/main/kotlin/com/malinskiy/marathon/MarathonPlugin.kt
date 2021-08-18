@@ -47,6 +47,9 @@ class MarathonPlugin : Plugin<Project> {
             val marathonTask = project.tasks.register(TASK_PREFIX) {
                 group = JavaBasePlugin.VERIFICATION_GROUP
                 description = "Runs all the instrumentation test variations on all the connected devices"
+                if (marathonWorkerTask != null) {
+                    finalizedBy(marathonWorkerTask)
+                }
             }
 
             val appExtension = extensions.findByType(AppExtension::class.java)
@@ -58,7 +61,7 @@ class MarathonPlugin : Plugin<Project> {
             val testedExtension = appExtension ?: libraryExtension
 
             testedExtension!!.testVariants.all {
-                val testTaskForVariant = registerTask(this, project, properties, testedExtension, marathonWorkerTask)
+                val testTaskForVariant = registerTask(this, project, properties, testedExtension)
                 marathonTask.configure { dependsOn(testTaskForVariant) }
             }
         }
@@ -83,8 +86,7 @@ class MarathonPlugin : Plugin<Project> {
         variant: TestVariant,
         project: Project,
         properties: MarathonProperties,
-        baseExtension: BaseExtension,
-        marathonWorkerTask: TaskProvider<MarathonWorkerRunTask>?
+        baseExtension: BaseExtension
     ): TaskProvider<out DefaultTask> {
         checkTestVariants(variant)
 
@@ -114,7 +116,6 @@ class MarathonPlugin : Plugin<Project> {
                         testVariant = variant
                     )
                     (this as MarathonScheduleTestsToWorkerTask).componentInfo = componentInfo
-                    finalizedBy(marathonWorkerTask)
                 } else {
                     val config = createConfiguration(
                         marathonExtensionName = EXTENSION_NAME,
